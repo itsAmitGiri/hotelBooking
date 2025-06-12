@@ -1,6 +1,7 @@
 package com.example.hotelBooking.exceptions.exceptionHandler;
 
 import com.example.hotelBooking.exceptions.BookingNotFoundException;
+import com.example.hotelBooking.exceptions.MethodArgumentNotValidException;
 import com.example.hotelBooking.exceptions.RoomNotAvailableException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,5 +34,15 @@ public class GlobalExceptionHandler
     response.put("description", request.getDescription(false));
 
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+  }
+
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ResponseEntity<Map<Object, Object>> handleMethodArgumentNotValidException(Exception e, WebRequest request){
+    Map<Object, Object> response = new HashMap<>();
+    response.put("timestamp", Instant.now());
+    response.put("message", e.getMessage());
+    response.put("description", request.getDescription(false));
+
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
   }
 }

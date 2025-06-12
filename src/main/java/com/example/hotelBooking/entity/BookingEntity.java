@@ -1,9 +1,7 @@
 package com.example.hotelBooking.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -15,17 +13,26 @@ public class BookingEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int bookingId;
+
     @NotNull
     private int room;
-    @NotNull
+
+    @NotBlank
     private String name;
+
     @NotNull
-    @Size(min = 10, max = 11)
+    @Pattern(regexp = "^[0-9]{10}$")
     private String PhoneNumber;
+
     @Email
+    @NotNull
     private String userEmail;
+
     @NotNull
+    @FutureOrPresent
     private LocalDate startDate;
+
     @NotNull
+    @Future
     private LocalDate endDate;
 }
