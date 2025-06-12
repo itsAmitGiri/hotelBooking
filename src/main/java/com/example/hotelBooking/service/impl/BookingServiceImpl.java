@@ -1,8 +1,10 @@
 package com.example.hotelBooking.service.impl;
 
+import com.example.hotelBooking.dto.BookingRequest;
 import com.example.hotelBooking.dto.BookingResponse;
 import com.example.hotelBooking.entity.BookingEntity;
 import com.example.hotelBooking.entity.RoomEntity;
+import com.example.hotelBooking.exceptions.RoomNotAvailableException;
 import com.example.hotelBooking.repository.BookingRepository;
 import com.example.hotelBooking.service.BookingService;
 import com.example.hotelBooking.service.RoomService;
@@ -21,17 +23,19 @@ public class BookingServiceImpl implements BookingService {
         this.bookingRepository = bookingRepository;
     }
     @Override
-    public BookingResponse createBooking(String userEmail, LocalDate start, LocalDate end) {
-        RoomEntity room = roomService.findAvailableRoom(start, end)
-                .orElseThrow(() -> new RuntimeException("No rooms available for selected dates"));
+    public BookingResponse createBooking(BookingRequest bookingRequest) {
+        RoomEntity room = roomService.findAvailableRoom(bookingRequest.getStartDate(), bookingRequest.getEndDate())
+                .orElseThrow(() -> new RoomNotAvailableException("No rooms available for selected dates"));
 
         BookingEntity booking = new BookingEntity();
         booking.setRoomId(room.getId());
-        booking.setUserEmail(userEmail);
-        booking.setStartDate(start);
-        booking.setEndDate(end);
+        booking.setName(bookingRequest.getName());
+        booking.setPhoneNumber(bookingRequest.getPhoneNumber());
+        booking.setUserEmail(bookingRequest.getUserEmail());
+        booking.setStartDate(bookingRequest.getStartDate());
+        booking.setEndDate(bookingRequest.getEndDate());
         bookingRepository.save(booking);
-        return new BookingResponse();
+        return new BookingResponse(booking.getBookingId(), booking.getRoomId(), booking.getName());
     }
 
     @Override

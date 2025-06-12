@@ -25,8 +25,8 @@ public class RoomServiceImpl implements RoomService {
         List<RoomEntity> rooms = roomRepository.findAll();
         for (RoomEntity room : rooms) {
             List<BookingEntity> bookings = bookingRepository.findByRoomId(room.getId());
-            boolean isAvailable = bookings.stream().noneMatch(b ->
-                    !(b.getEndDate().isBefore(start) || b.getStartDate().isAfter(end))
+            boolean isAvailable = bookings.stream().allMatch(b ->
+                b.getEndDate().isBefore(start) || b.getStartDate().isAfter(end)
             );
             if (isAvailable) return Optional.of(room);
         }
