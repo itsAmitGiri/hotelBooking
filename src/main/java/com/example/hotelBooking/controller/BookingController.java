@@ -20,9 +20,7 @@ public class BookingController {
 
     @PostMapping
     public ResponseEntity<BookingResponse> bookRoom(@RequestBody BookingRequest request) {
-        BookingResponse booking = bookingService.createBooking(
-                request.getUserEmail(), request.getStartDate(), request.getEndDate()
-        );
+        BookingResponse booking = bookingService.createBooking(request);
         return ResponseEntity.ok(booking);
     }
 
