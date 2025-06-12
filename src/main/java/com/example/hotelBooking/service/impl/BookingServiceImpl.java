@@ -6,6 +6,7 @@ import com.example.hotelBooking.entity.BookingEntity;
 import com.example.hotelBooking.entity.RoomEntity;
 import com.example.hotelBooking.exceptions.BookingNotFoundException;
 import com.example.hotelBooking.exceptions.RoomNotAvailableException;
+import com.example.hotelBooking.mapper.BookingMapper;
 import com.example.hotelBooking.repository.BookingRepository;
 import com.example.hotelBooking.service.BookingService;
 import com.example.hotelBooking.service.RoomService;
@@ -19,25 +20,21 @@ import java.util.stream.Collectors;
 public class BookingServiceImpl implements BookingService {
     private final RoomService roomService;
     private final BookingRepository bookingRepository;
+    private final BookingMapper mapper;
 
-    public BookingServiceImpl(RoomService roomService, BookingRepository bookingRepository){
+    public BookingServiceImpl(RoomService roomService, BookingRepository bookingRepository, BookingMapper mapper){
         this.roomService = roomService;
         this.bookingRepository = bookingRepository;
+        this.mapper = mapper;
     }
     @Override
     public BookingResponse createBooking(BookingRequest bookingRequest) {
         RoomEntity room = roomService.findAvailableRoom(bookingRequest.getStartDate(), bookingRequest.getEndDate())
                 .orElseThrow(() -> new RoomNotAvailableException("No rooms available for selected dates"));
 
-        BookingEntity booking = new BookingEntity();
-        booking.setRoomId(room.getId());
-        booking.setName(bookingRequest.getName());
-        booking.setPhoneNumber(bookingRequest.getPhoneNumber());
-        booking.setUserEmail(bookingRequest.getUserEmail());
-        booking.setStartDate(bookingRequest.getStartDate());
-        booking.setEndDate(bookingRequest.getEndDate());
+        BookingEntity booking = mapper.toEntity(bookingRequest);
         bookingRepository.save(booking);
-        return new BookingResponse(booking.getBookingId(), booking.getRoomId(), booking.getName());
+        return mapper.toResponse(booking);
     }
 
     @Override
@@ -61,7 +58,7 @@ public class BookingServiceImpl implements BookingService {
             throw new BookingNotFoundException("Booking does not exist with booking Id : " +id);
         }
 
-        return new BookingResponse(booking.get().getBookingId(), booking.get().getRoomId(), booking.get().getName());
+        return mapper.toResponse(booking.get());
     }
 
     @Override
@@ -72,7 +69,7 @@ public class BookingServiceImpl implements BookingService {
             throw new BookingNotFoundException("Booking does not exist with name : " +name);
         }
         return bookings.stream()
-            .map(booking -> new BookingResponse(booking.getBookingId(), booking.getRoomId(), booking.getName()))
+            .map(mapper::toResponse)
             .collect(Collectors.toList());
     }
 
@@ -90,7 +87,7 @@ public class BookingServiceImpl implements BookingService {
         booking.get().setStartDate(request.getStartDate());
         booking.get().setEndDate(request.getEndDate());
         bookingRepository.save(booking.get());
-        return new BookingResponse(booking.get().getBookingId(), booking.get().getRoomId(), booking.get().getName());
+        return mapper.toResponse(booking.get());
 
     }
 }
