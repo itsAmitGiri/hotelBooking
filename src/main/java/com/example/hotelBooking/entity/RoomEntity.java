@@ -14,6 +14,7 @@ public class RoomEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(unique = true)
     private int roomNumber;
 
     private int capacity;

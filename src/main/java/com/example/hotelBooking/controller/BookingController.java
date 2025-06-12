@@ -4,6 +4,8 @@ import com.example.hotelBooking.dto.BookingRequest;
 import com.example.hotelBooking.dto.BookingResponse;
 import com.example.hotelBooking.entity.BookingEntity;
 import com.example.hotelBooking.service.BookingService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,19 +21,19 @@ public class BookingController {
     }
 
     @PostMapping
-    public ResponseEntity<BookingResponse> bookRoom(@RequestBody BookingRequest request) {
-        BookingResponse booking = bookingService.createBooking(request);
-        return ResponseEntity.ok(booking);
+    public ResponseEntity<BookingResponse> bookRoom(@Valid @RequestBody BookingRequest request) {
+        BookingResponse response = bookingService.createBooking(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> cancel(@PathVariable int id) {
+    public ResponseEntity<Void> cancelBooking(@PathVariable int id) {
         bookingService.cancelBooking(id);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping
-    public List<BookingEntity> getAll() {
+    public List<BookingEntity> getAllBookings() {
         return bookingService.getAllBookings();
     }
 }
