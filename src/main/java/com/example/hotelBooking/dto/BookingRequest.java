@@ -7,15 +7,22 @@ import java.time.LocalDate;
 
 @Data
 public class BookingRequest {
-    @NotNull
+    @NotBlank(message = "Name is required")
     private String name;
-    @NotNull
-    @Size(min = 10, max = 11)
+
+    @NotBlank(message = "Phone number is required")
+    @Pattern(regexp = "^[0-9]{10}$", message = "Phone number must be 10 digits")
     private String phoneNumber;
-    @Email
+
+    @Email(message = "Invalid email format")
+    @NotBlank(message = "Email is required")
     private String userEmail;
-    @FutureOrPresent
+
+    @NotNull(message = "Start date is required")
+    @FutureOrPresent(message = "Start date must be today or in the future")
     private LocalDate startDate;
-    @Future
+
+    @NotNull(message = "End date is required")
+    @Future(message = "End date must be in the future")
     private LocalDate endDate;
 }
