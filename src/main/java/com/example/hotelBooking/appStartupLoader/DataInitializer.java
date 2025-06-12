@@ -13,12 +13,10 @@ public class DataInitializer implements CommandLineRunner {
         this.roomRepository = roomRepository;
     }
     @Override
-    public void run(String... args) throws Exception {
-        for (int i = 1; i <= 5; i++) {
-            roomRepository.save(new RoomEntity(i, 2));
-        }
-        for (int i = 1; i <= 5; i++) {
-            roomRepository.save(new RoomEntity(i, 3));
+    public void run(String... args) {
+        for (int i = 1; i <= 10; i++) {
+            int capacity = (i <= 5) ? 2 : 3;
+            roomRepository.save(new RoomEntity(i, capacity));
         }
     }
 }
