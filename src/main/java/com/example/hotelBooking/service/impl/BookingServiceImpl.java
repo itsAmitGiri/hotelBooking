@@ -30,14 +30,14 @@ public class BookingServiceImpl implements BookingService {
                 .orElseThrow(() -> new RoomNotAvailableException("No rooms available for selected dates"));
 
         BookingEntity booking = new BookingEntity();
-        booking.setRoom(room.getId());
+        booking.setRoomId(room.getId());
         booking.setName(bookingRequest.getName());
         booking.setPhoneNumber(bookingRequest.getPhoneNumber());
         booking.setUserEmail(bookingRequest.getUserEmail());
         booking.setStartDate(bookingRequest.getStartDate());
         booking.setEndDate(bookingRequest.getEndDate());
         bookingRepository.save(booking);
-        return new BookingResponse(booking.getBookingId(), booking.getRoom(), booking.getName());
+        return new BookingResponse(booking.getBookingId(), booking.getRoomId(), booking.getName());
     }
 
     @Override
@@ -49,7 +49,7 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingResponse> getAllBookings() {
         List<BookingEntity> bookings = bookingRepository.findAll();
         return bookings.stream()
-            .map(booking -> new BookingResponse(booking.getBookingId(), booking.getRoom(), booking.getName()))
+            .map(booking -> new BookingResponse(booking.getBookingId(), booking.getRoomId(), booking.getName()))
             .collect(Collectors.toList());
     }
 
@@ -61,7 +61,7 @@ public class BookingServiceImpl implements BookingService {
             throw new BookingNotFoundException("Booking does not exist with booking Id : " +id);
         }
 
-        return new BookingResponse(booking.get().getBookingId(), booking.get().getRoom(), booking.get().getName());
+        return new BookingResponse(booking.get().getBookingId(), booking.get().getRoomId(), booking.get().getName());
     }
 
     @Override
@@ -72,7 +72,7 @@ public class BookingServiceImpl implements BookingService {
             throw new BookingNotFoundException("Booking does not exist with name : " +name);
         }
         return bookings.stream()
-            .map(booking -> new BookingResponse(booking.getBookingId(), booking.getRoom(), booking.getName()))
+            .map(booking -> new BookingResponse(booking.getBookingId(), booking.getRoomId(), booking.getName()))
             .collect(Collectors.toList());
     }
 
@@ -90,7 +90,7 @@ public class BookingServiceImpl implements BookingService {
         booking.get().setStartDate(request.getStartDate());
         booking.get().setEndDate(request.getEndDate());
         bookingRepository.save(booking.get());
-        return new BookingResponse(booking.get().getBookingId(), booking.get().getRoom(), booking.get().getName());
+        return new BookingResponse(booking.get().getBookingId(), booking.get().getRoomId(), booking.get().getName());
 
     }
 }
