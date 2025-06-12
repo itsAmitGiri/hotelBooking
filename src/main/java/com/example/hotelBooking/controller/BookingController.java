@@ -19,7 +19,7 @@ public class BookingController {
         this.bookingService = bookingService;
     }
 
-    @PostMapping
+    @PostMapping("/booking/create")
     public ResponseEntity<BookingResponse> bookRoom(@Valid @RequestBody BookingRequest request) {
         BookingResponse response = bookingService.createBooking(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -31,12 +31,12 @@ public class BookingController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping
+    @GetMapping("/bookings")
     public List<BookingResponse> getAllBookings() {
         return bookingService.getAllBookings();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/booking/{id}")
     public ResponseEntity<BookingResponse> getBookingById(@PathVariable int id) {
         BookingResponse booking = bookingService.getBookingByBookingId(id);
         return ResponseEntity.ok(booking);
@@ -48,8 +48,8 @@ public class BookingController {
         return ResponseEntity.ok(bookings);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<BookingResponse> updateBooking(@PathVariable int id, @RequestBody BookingRequest request) {
+    @PutMapping("/booking/update/{id}")
+    public ResponseEntity<BookingResponse> updateBooking(@PathVariable int id, @Valid @RequestBody BookingRequest request) {
         BookingResponse response = bookingService.updateBooking(id, request);
         return ResponseEntity.ok(response);
     }

@@ -15,7 +15,7 @@ public class BookingEntity {
     private int bookingId;
 
     @NotNull
-    private int room;
+    private int roomId;
 
     @NotBlank
     private String name;

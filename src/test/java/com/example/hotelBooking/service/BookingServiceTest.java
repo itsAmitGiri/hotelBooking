@@ -48,7 +48,7 @@ public class BookingServiceTest {
 
     mockBooking = new BookingEntity();
     mockBooking.setBookingId(1);
-    mockBooking.setRoom(101);
+    mockBooking.setRoomId(101);
     mockBooking.setName("amit");
     mockBooking.setPhoneNumber("1234567890");
     mockBooking.setUserEmail("user@example.com");
