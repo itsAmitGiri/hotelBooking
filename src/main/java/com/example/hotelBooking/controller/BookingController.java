@@ -2,7 +2,6 @@ package com.example.hotelBooking.controller;
 
 import com.example.hotelBooking.dto.BookingRequest;
 import com.example.hotelBooking.dto.BookingResponse;
-import com.example.hotelBooking.entity.BookingEntity;
 import com.example.hotelBooking.service.BookingService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -33,7 +32,25 @@ public class BookingController {
     }
 
     @GetMapping
-    public List<BookingEntity> getAllBookings() {
+    public List<BookingResponse> getAllBookings() {
         return bookingService.getAllBookings();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<BookingResponse> getBookingById(@PathVariable int id) {
+        BookingResponse booking = bookingService.getBookingByBookingId(id);
+        return ResponseEntity.ok(booking);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<BookingResponse>> searchBookings(@RequestParam String name) {
+        List<BookingResponse> bookings = bookingService.getBookingsByName(name);
+        return ResponseEntity.ok(bookings);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<BookingResponse> updateBooking(@PathVariable int id, @RequestBody BookingRequest request) {
+        BookingResponse response = bookingService.updateBooking(id, request);
+        return ResponseEntity.ok(response);
     }
 }
