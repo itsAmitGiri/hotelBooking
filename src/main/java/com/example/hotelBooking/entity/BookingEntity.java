@@ -1,7 +1,6 @@
 package com.example.hotelBooking.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -17,7 +16,7 @@ public class BookingEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int bookingId;
     @NotNull
-    private int roomId;
+    private int room;
     @NotNull
     private String name;
     @NotNull

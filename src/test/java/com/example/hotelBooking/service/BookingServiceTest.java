@@ -4,6 +4,7 @@ import com.example.hotelBooking.dto.BookingRequest;
 import com.example.hotelBooking.dto.BookingResponse;
 import com.example.hotelBooking.entity.BookingEntity;
 import com.example.hotelBooking.entity.RoomEntity;
+import com.example.hotelBooking.exceptions.BookingNotFoundException;
 import com.example.hotelBooking.exceptions.RoomNotAvailableException;
 import com.example.hotelBooking.repository.BookingRepository;
 import com.example.hotelBooking.service.impl.BookingServiceImpl;
@@ -47,7 +48,7 @@ public class BookingServiceTest {
 
     mockBooking = new BookingEntity();
     mockBooking.setBookingId(1);
-    mockBooking.setRoomId(1);
+    mockBooking.setRoom(101);
     mockBooking.setName("amit");
     mockBooking.setPhoneNumber("1234567890");
     mockBooking.setUserEmail("user@example.com");
@@ -102,11 +103,70 @@ public class BookingServiceTest {
     mockList.add(mockBooking);
     when(bookingRepository.findAll()).thenReturn(mockList);
 
-    List<BookingEntity> bookings = bookingService.getAllBookings();
+    List<BookingResponse> bookings = bookingService.getAllBookings();
 
     assertEquals(1, bookings.size());
     assertEquals("amit", bookings.get(0).getName());
     verify(bookingRepository, times(1)).findAll();
+  }
+
+  @Test
+  public void testGetBookingById_Success() {
+    when(bookingRepository.findById(1)).thenReturn(Optional.of(mockBooking));
+    BookingResponse response = bookingService.getBookingByBookingId(1);
+
+    assertEquals(1, response.getBookingId());
+    assertEquals(101, response.getRoomId());
+    assertEquals("amit", response.getName());
+  }
+
+  @Test
+  public void testGetBookingById_NotFound() {
+    when(bookingRepository.findById(2)).thenReturn(Optional.empty());
+    assertThrows(BookingNotFoundException.class, () -> bookingService.getBookingByBookingId(2));
+  }
+
+  @Test
+  public void testGetBookingsByName_Success() {
+    when(bookingRepository.findByName("amit")).thenReturn(List.of(mockBooking));
+    List<BookingResponse> responses = bookingService.getBookingsByName("amit");
+
+    assertEquals(1, responses.size());
+    assertEquals("amit", responses.get(0).getName());
+  }
+
+  @Test
+  public void testGetBookingsByName_NotFound() {
+    when(bookingRepository.findByName("NonExistent"))
+        .thenReturn(List.of());
+
+    assertThrows(BookingNotFoundException.class,
+        () -> bookingService.getBookingsByName("NonExistent"));
+  }
+
+  @Test
+  public void testUpdateBooking_Success() {
+    BookingRequest request = new BookingRequest();
+    request.setName("Updated Name");
+    request.setPhoneNumber("9876543210");
+    request.setUserEmail("updated@example.com");
+    request.setStartDate(LocalDate.now().plusDays(2));
+    request.setEndDate(LocalDate.now().plusDays(4));
+
+    when(bookingRepository.findById(1)).thenReturn(Optional.of(mockBooking));
+    when(bookingRepository.save(any())).thenReturn(mockBooking);
+
+    BookingResponse response = bookingService.updateBooking(1, request);
+
+    assertEquals("Updated Name", response.getName());
+  }
+
+  @Test
+  public void testUpdateBooking_NotFound() {
+    BookingRequest request = new BookingRequest();
+    when(bookingRepository.findById(999)).thenReturn(Optional.empty());
+
+    assertThrows(BookingNotFoundException.class, () -> bookingService.updateBooking(999, request));
   }
 }
 
