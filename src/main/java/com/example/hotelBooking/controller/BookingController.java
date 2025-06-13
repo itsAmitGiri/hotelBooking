@@ -20,12 +20,12 @@ public class BookingController {
     }
 
     @PostMapping("/booking/create")
-    public ResponseEntity<BookingResponse> bookRoom(@Valid @RequestBody BookingRequest request) {
+    public ResponseEntity<BookingResponse> createBooking(@Valid @RequestBody BookingRequest request) {
         BookingResponse response = bookingService.createBooking(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/booking/cancel/{id}")
     public ResponseEntity<Void> cancelBooking(@PathVariable int id) {
         bookingService.cancelBooking(id);
         return ResponseEntity.ok().build();
